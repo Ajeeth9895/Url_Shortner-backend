@@ -1,22 +1,26 @@
 const nodemailer = require('nodemailer');
-const nodemailergun = require('nodemailer-mailgun-transport');
+require('dotenv').config()
 
 
 const passwordEmail = async ({ email, firstName, lastName, message }) => {
   
 
-  const auth = {
+  let mailTranspoter = nodemailer.createTransport({
+    service: "gmail",
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      api_key: '634587321a4ab51f0db5a3b29b6c79af-07ec2ba2-42c472ee',
-      domain: 'sandbox2a2383916264428798f5b0e90bb59a6c.mailgun.org'
+      user: process.env.USER,
+      pass: process.env.PASSWORD
     }
-  }
+  })
 
 
-  let transporter = nodemailer.createTransport(nodemailergun(auth));
+  
 
-  const mailOptions = {
-    from: 'ajeevishnu2026@gmail.com',
+  let details  = {
+    from: process.env.USER,
     to: `${email}`,
     subject: "Reset password",
     html: ` <div style="background-color: antiquewhite; margin-left:25%; margin-right:25%; padding:20px;">
@@ -35,7 +39,7 @@ const passwordEmail = async ({ email, firstName, lastName, message }) => {
       </div>`
   }
 
-  transporter.sendMail(mailOptions, (err, data) => {
+  mailTranspoter.sendMail(details, (err, data) => {
     if (err) {
       console.log('Error' + err);
     } else {
